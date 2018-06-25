@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- main -->
+    <dimen name="margin_recycler_view">8dp</dimen>
+
+    <!-- list item -->
+    <dimen name="image_view_height">200dp</dimen>
+    <dimen name="text_view_margin">8dp</dimen>
+    <dimen name="text_view_size">24sp</dimen>
+</resources>
