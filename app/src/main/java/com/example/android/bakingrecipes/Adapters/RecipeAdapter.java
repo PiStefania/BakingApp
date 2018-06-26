@@ -1,4 +1,4 @@
-package com.example.android.bakingrecipes;
+package com.example.android.bakingrecipes.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.bakingrecipes.R;
+import com.example.android.bakingrecipes.Objects.Recipe;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

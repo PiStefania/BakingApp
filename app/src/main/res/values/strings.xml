@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Baking Recipes</string>
-
+    <string name="details_activity">Recipe Details</string>
+    <string name="details_recipe_ingredients">Recipe Ingredients</string>
     <string name="recipes" translatable="false">[
   {
     \"id\": 1,

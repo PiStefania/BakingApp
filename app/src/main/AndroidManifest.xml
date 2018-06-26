@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.android.bakingrecipes">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -11,13 +11,28 @@
         android:roundIcon="@drawable/baking_app_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".DetailsActivity"
+            android:label="@string/details_activity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".RecipeStepActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".DetailsActivity" />
+        <activity
+            android:name=".IngredientsActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".DetailsActivity" />
     </application>
 
 </manifest>

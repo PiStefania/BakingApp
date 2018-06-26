@@ -1,6 +1,7 @@
 package com.example.android.bakingrecipes.Utils;
 
-import com.example.android.bakingrecipes.Recipe;
+import com.example.android.bakingrecipes.Objects.DetailRecipe;
+import com.example.android.bakingrecipes.Objects.Recipe;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,9 +29,29 @@ public class VariousMethods {
             Integer servings = recipeObject.getInt(SERVINGS_TAG);
 
             //new recipe
-            Recipe recipe = new Recipe(name,image,ingredients,steps,servings);
+            Recipe recipe = new Recipe(name,image,ingredients.toString(),steps.toString(),servings);
             recipes.add(recipe);
         }
         return recipes;
+    }
+
+    private static final String STEP_TITLE = "shortDescription";
+    private static final String STEP_DESCRIPTION = "description";
+    private static final String STEP_VIDEO = "videoURL";
+
+    public static ArrayList<DetailRecipe> getStepsRecipe(String stepsStr) throws JSONException {
+        ArrayList<DetailRecipe> detailRecipes = new ArrayList<>();
+        JSONArray mainObject = new JSONArray(stepsStr);
+        for(int i=0;i<mainObject.length();i++){
+            JSONObject recipeObject = mainObject.getJSONObject(i);
+            String stepTitle = recipeObject.getString(STEP_TITLE);
+            String stepInstructions = recipeObject.getString(STEP_DESCRIPTION);
+            String stepVideo = recipeObject.getString(STEP_VIDEO);
+
+            //new step detail
+            DetailRecipe detail = new DetailRecipe(stepTitle,stepVideo,stepInstructions);
+            detailRecipes.add(detail);
+        }
+        return detailRecipes;
     }
 }

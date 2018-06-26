@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RecipeStepActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_recipe_step"
+        android:layout_marginRight="@dimen/margin_recipe_step"
+        android:layout_marginTop="@dimen/margin_recipe_step"
+        android:orientation="vertical">
+
+        <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+            android:id="@+id/video_recipe_step"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/image_view_height" />
+
+        <ImageView
+            android:id="@+id/no_video_found"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/image_view_height"
+            android:scaleType="centerCrop"
+            android:src="@drawable/no_video_thumbnail"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/instructions_step_recipe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_recipe_step"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_view_size_instructions" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="bottom"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/previous_step_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:gravity="bottom" />
+
+        <View
+            android:layout_width="@dimen/view_divider_buttons"
+            android:layout_height="fill_parent"
+            android:background="@android:color/darker_gray" />
+
+        <Button
+            android:id="@+id/next_step_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:gravity="bottom" />
+
+    </LinearLayout>
+
+</RelativeLayout>

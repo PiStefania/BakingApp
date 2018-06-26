@@ -3,6 +3,10 @@
     <!-- main -->
     <dimen name="margin_recycler_view">8dp</dimen>
 
+    <!-- recipe step -->
+    <dimen name="margin_recipe_step">8dp</dimen>
+    <dimen name="text_view_size_instructions">20sp</dimen>
+    <dimen name="view_divider_buttons">2dp</dimen>
     <!-- list item -->
     <dimen name="image_view_height">200dp</dimen>
     <dimen name="text_view_margin">8dp</dimen>

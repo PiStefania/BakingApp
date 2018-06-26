@@ -1,5 +1,6 @@
 package com.example.android.bakingrecipes;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -8,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.example.android.bakingrecipes.Adapters.RecipeAdapter;
+import com.example.android.bakingrecipes.Objects.Recipe;
 import com.example.android.bakingrecipes.Utils.ItemDecoration;
 import com.example.android.bakingrecipes.Utils.VariousMethods;
 
@@ -45,7 +48,9 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
 
     @Override
     public void onClick(Recipe recipe) {
-
+        Intent detailsIntent = new Intent(this,DetailsActivity.class);
+        detailsIntent.putExtra("Recipe",recipe);
+        startActivity(detailsIntent);
     }
 
     @Override
