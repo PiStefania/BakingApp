@@ -1,7 +1,13 @@
 <resources>
     <string name="app_name">Baking Recipes</string>
     <string name="details_activity">Recipe Details</string>
+    <string name="recipe_ingredients_activity">Recipe Ingredients</string>
     <string name="details_recipe_ingredients">Recipe Ingredients</string>
+
+    <string name="ingredient_header">Ingredient</string>
+    <string name="measure_header">Measure</string>
+    <string name="quantity_header">Quantity</string>
+
     <string name="recipes" translatable="false">[
   {
     \"id\": 1,
@@ -173,7 +179,7 @@
       {
         \"id\": 1,
         \"shortDescription\": \"Starting prep\",
-        \"description\": \"1. Preheat the oven to 350�F. Butter the bottom and sides of a 9\\"x13\\" pan.\",
+        \"description\": \"1. Preheat the oven to 350\u00b0F. Butter the bottom and sides of a 9\\"x13\\" pan.\",
         \"videoURL\": \"\",
         \"thumbnailURL\": \"\"
       },

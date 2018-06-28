@@ -1,73 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".RecipeStepActivity">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_recipe_step"
-        android:layout_marginRight="@dimen/margin_recipe_step"
-        android:layout_marginTop="@dimen/margin_recipe_step"
-        android:orientation="vertical">
+        android:layout_height="fill_parent"
+        android:layout_above="@id/footer_buttons"
+        android:fillViewport="true">
 
-        <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-            android:id="@+id/video_recipe_step"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/image_view_height" />
-
-        <ImageView
-            android:id="@+id/no_video_found"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/image_view_height"
-            android:scaleType="centerCrop"
-            android:src="@drawable/no_video_thumbnail"
-            android:visibility="invisible" />
-
-        <TextView
-            android:id="@+id/instructions_step_recipe"
+        <LinearLayout
+            android:id="@+id/details_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_recipe_step"
-            android:fontFamily="sans-serif-light"
-            android:gravity="center"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/text_view_size_instructions" />
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/margin_recipe_step"
+            android:paddingRight="@dimen/margin_recipe_step"
+            android:paddingTop="@dimen/margin_recipe_step">
 
-    </LinearLayout>
+            <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+                android:id="@+id/video_recipe_step"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/image_view_height" />
 
+            <ImageView
+                android:id="@+id/no_video_found"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/image_view_height"
+                android:scaleType="centerCrop"
+                android:src="@drawable/no_video_thumbnail"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/instructions_step_recipe"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_recipe_step"
+                android:fontFamily="sans-serif-light"
+                android:gravity="center"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/text_view_size_instructions" />
+
+        </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
+        android:id="@+id/footer_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:gravity="bottom"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/previous_step_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/colorAccent"
-            android:gravity="bottom" />
-
-        <View
-            android:layout_width="@dimen/view_divider_buttons"
+            android:id="@+id/previous_section"
+            android:layout_width="@dimen/zero_dp"
             android:layout_height="fill_parent"
-            android:background="@android:color/darker_gray" />
+            android:layout_margin="@dimen/margin_recipe_step"
+            android:layout_weight="1"
+            android:backgroundTint="@color/colorAccent"
+            android:drawableLeft="@drawable/baseline_keyboard_arrow_left_black_24dp"
+            android:drawableStart="@drawable/baseline_keyboard_arrow_left_black_24dp" />
 
         <Button
-            android:id="@+id/next_step_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/next_section"
+            android:layout_width="@dimen/zero_dp"
+            android:layout_height="fill_parent"
+            android:layout_margin="@dimen/margin_recipe_step"
             android:layout_weight="1"
-            android:background="@color/colorAccent"
-            android:gravity="bottom" />
+            android:backgroundTint="@color/colorAccent"
+            android:drawableEnd="@drawable/baseline_keyboard_arrow_right_black_24dp"
+            android:drawableRight="@drawable/baseline_keyboard_arrow_right_black_24dp" />
 
     </LinearLayout>
 

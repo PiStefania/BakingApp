@@ -1,15 +1,22 @@
 package com.example.android.bakingrecipes;
 
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.android.bakingrecipes.Objects.DetailRecipe;
+import com.example.android.bakingrecipes.Utils.VariousMethods;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -28,21 +35,40 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RecipeStepActivity extends AppCompatActivity implements View.OnClickListener, ExoPlayer.EventListener{
+public class RecipeStepActivity extends AppCompatActivity implements View.OnClickListener, ExoPlayer.EventListener {
 
-    @BindView(R.id.instructions_step_recipe) TextView instructions;
-    @BindView(R.id.no_video_found) ImageView noVideoImageView;
+    @BindView(R.id.instructions_step_recipe)
+    TextView instructions;
+    @BindView(R.id.no_video_found)
+    ImageView noVideoImageView;
+    @BindView(R.id.previous_section)
+    Button previousStep;
+    @BindView(R.id.next_section)
+    Button nextStep;
+    @BindView(R.id.footer_buttons) LinearLayout footerButtons;
+    @BindView(R.id.details_view) LinearLayout detailView;
     private SimpleExoPlayer mExoPlayer;
-    private SimpleExoPlayerView mPlayerView;
+    @BindView(R.id.video_recipe_step)
+    SimpleExoPlayerView mPlayerView;
     private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
 
-    private static final String TAG = RecipeStepActivity.class.getSimpleName();
+    private static final String LOG_TAG = RecipeStepActivity.class.getSimpleName();
+    private static final String RECIPE_STEPS_EXTRA = "RecipeSteps";
+    private static final String RECIPE_STEPS_POSITION_EXTRA = "RecipeStepPosition";
+    private static final String RECIPE_STEPS_ALL_STEPS_EXTRA = "RecipeStepAllSteps";
+    private static final String RECIPE_STEPS_NEXT_STEP_EXTRA = "RecipeStepNext";
+    private static final String RECIPE_STEPS_PREVIOUS_STEP_EXTRA = "RecipeStepPrevious";
 
+    private ArrayList<DetailRecipe> detailRecipes;
+    private int sizeSteps;
     private DetailRecipe detailRecipe;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,45 +76,49 @@ public class RecipeStepActivity extends AppCompatActivity implements View.OnClic
         ButterKnife.bind(this);
 
         //get recipe step details
-        detailRecipe = (DetailRecipe) getIntent().getParcelableExtra("RecipeStep");
+        detailRecipe = getIntent().getParcelableExtra(RECIPE_STEPS_EXTRA);
+        int positionStep = getIntent().getIntExtra(RECIPE_STEPS_POSITION_EXTRA, -1);
+        DetailRecipe detailRecipePrevious = getIntent().getParcelableExtra(RECIPE_STEPS_PREVIOUS_STEP_EXTRA);
+        DetailRecipe detailRecipeNext = getIntent().getParcelableExtra(RECIPE_STEPS_NEXT_STEP_EXTRA);
+        detailRecipes = getIntent().getParcelableArrayListExtra(RECIPE_STEPS_ALL_STEPS_EXTRA);
+        sizeSteps = detailRecipes.size();
 
         //set title of toolbar
         this.setTitle(detailRecipe.getDetailTitle());
 
-        //Initialize the player view.
-        mPlayerView = (SimpleExoPlayerView) findViewById(R.id.video_recipe_step);
-
-        if(!detailRecipe.getDetailVideo().isEmpty() || !detailRecipe.getDetailVideo().equals("")) {
-            //Initialize the Media Session.
+        if (!detailRecipe.getDetailVideo().isEmpty() || !detailRecipe.getDetailVideo().equals("")) {
+            //initialize Media Session.
             initializeMediaSession();
-            //Initialize the player.
+            //initialize player.
             initializePlayer(Uri.parse(detailRecipe.getDetailVideo()));
             noVideoImageView.setVisibility(View.GONE);
-        }else{
+        } else {
             mPlayerView.setVisibility(View.GONE);
             noVideoImageView.setVisibility(View.VISIBLE);
         }
 
         instructions.setText(detailRecipe.getDetailInstructions());
+
+        populateButtons(positionStep, detailRecipePrevious, detailRecipeNext);
     }
 
     private void initializeMediaSession() {
 
-        //Create a MediaSessionCompat.
-        mMediaSession = new MediaSessionCompat(this, TAG);
+        //create a MediaSessionCompat
+        mMediaSession = new MediaSessionCompat(this, LOG_TAG);
 
-        //Enable callbacks from MediaButtons and TransportControls.
+        //enable callbacks
         mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
 
-        //Do not let MediaButtons restart the player when the app is not visible.
+        //don't restart
         mMediaSession.setMediaButtonReceiver(null);
 
-        //Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player.
+        //set an initial PlaybackState
         mStateBuilder = new PlaybackStateCompat.Builder().setActions(
-                                PlaybackStateCompat.ACTION_PLAY |
-                                PlaybackStateCompat.ACTION_PAUSE |
-                                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
-                                PlaybackStateCompat.ACTION_PLAY_PAUSE);
+                PlaybackStateCompat.ACTION_PLAY |
+                        PlaybackStateCompat.ACTION_PAUSE |
+                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
+                        PlaybackStateCompat.ACTION_PLAY_PAUSE);
 
         mMediaSession.setPlaybackState(mStateBuilder.build());
 
@@ -96,26 +126,23 @@ public class RecipeStepActivity extends AppCompatActivity implements View.OnClic
         //MySessionCallback has methods that handle callbacks from a media controller.
         mMediaSession.setCallback(new MySessionCallback());
 
-        //Start the Media Session since the activity is active.
+        //start the Media Session
         mMediaSession.setActive(true);
 
     }
 
-    private void initializePlayer(Uri mediaUri){
+    private void initializePlayer(Uri mediaUri) {
         if (mExoPlayer == null) {
-            // Create an instance of the ExoPlayer.
+            //create an instance of the ExoPlayer.
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(this, trackSelector, loadControl);
             mPlayerView.setPlayer(mExoPlayer);
-
-            // Set the ExoPlayer.EventListener to this activity.
             mExoPlayer.addListener(this);
 
-            // Prepare the MediaSource.
-            String userAgent = Util.getUserAgent(this, "ClassicalMusicQuiz");
-            MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
-                    this, userAgent), new DefaultExtractorsFactory(), null, null);
+            //prepare MediaSource for .mp4
+            String userAgent = Util.getUserAgent(this, "BakingRecipes");
+            MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(this, userAgent), new DefaultExtractorsFactory(), null, null);
             mExoPlayer.prepare(mediaSource);
             mExoPlayer.setPlayWhenReady(true);
         }
@@ -143,10 +170,10 @@ public class RecipeStepActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-        if((playbackState == ExoPlayer.STATE_READY) && playWhenReady){
+        if ((playbackState == ExoPlayer.STATE_READY) && playWhenReady) {
             mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
                     mExoPlayer.getCurrentPosition(), 1f);
-        } else if((playbackState == ExoPlayer.STATE_READY)){
+        } else if ((playbackState == ExoPlayer.STATE_READY)) {
             mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
                     mExoPlayer.getCurrentPosition(), 1f);
         }
@@ -172,7 +199,7 @@ public class RecipeStepActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(!detailRecipe.getDetailVideo().isEmpty() || !detailRecipe.getDetailVideo().equals("")) {
+        if (!detailRecipe.getDetailVideo().isEmpty() || !detailRecipe.getDetailVideo().equals("")) {
             releasePlayer();
             mMediaSession.setActive(false);
         }
@@ -193,5 +220,124 @@ public class RecipeStepActivity extends AppCompatActivity implements View.OnClic
         public void onSkipToPrevious() {
             mExoPlayer.seekTo(0);
         }
+    }
+
+    private void populateButtons(int position, final DetailRecipe previous, final DetailRecipe next) {
+        if (position == 0) {
+            previousStep.setVisibility(View.GONE);
+            nextStep.setText(next.getDetailTitle());
+            nextStep.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int positionStep = VariousMethods.findPositionClickedStep(next, detailRecipes);
+                    Intent recipeStep = new Intent(RecipeStepActivity.this, RecipeStepActivity.class);
+                    recipeStep.putExtra(RECIPE_STEPS_EXTRA, next);
+                    recipeStep.putExtra(RECIPE_STEPS_POSITION_EXTRA, positionStep);
+                    recipeStep.putExtra(RECIPE_STEPS_ALL_STEPS_EXTRA, detailRecipes);
+                    if (positionStep == 0) {
+                        recipeStep.putExtra(RECIPE_STEPS_NEXT_STEP_EXTRA, detailRecipes.get(positionStep + 1));
+                    } else if (positionStep == detailRecipes.size() - 1) {
+                        recipeStep.putExtra(RECIPE_STEPS_PREVIOUS_STEP_EXTRA, detailRecipes.get(positionStep - 1));
+                    } else {
+                        recipeStep.putExtra(RECIPE_STEPS_PREVIOUS_STEP_EXTRA, detailRecipes.get(positionStep - 1));
+                        recipeStep.putExtra(RECIPE_STEPS_NEXT_STEP_EXTRA, detailRecipes.get(positionStep + 1));
+                    }
+                    finish();
+                    startActivity(recipeStep);
+                }
+            });
+        } else if (position == sizeSteps - 1) {
+            nextStep.setVisibility(View.GONE);
+            previousStep.setText(previous.getDetailTitle());
+            previousStep.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int positionStep = VariousMethods.findPositionClickedStep(previous, detailRecipes);
+                    Intent recipeStep = new Intent(RecipeStepActivity.this, RecipeStepActivity.class);
+                    recipeStep.putExtra(RECIPE_STEPS_EXTRA, previous);
+                    recipeStep.putExtra(RECIPE_STEPS_POSITION_EXTRA, positionStep);
+                    recipeStep.putExtra(RECIPE_STEPS_ALL_STEPS_EXTRA, detailRecipes);
+                    if (positionStep == 0) {
+                        recipeStep.putExtra(RECIPE_STEPS_NEXT_STEP_EXTRA, detailRecipes.get(positionStep + 1));
+                    } else if (positionStep == detailRecipes.size() - 1) {
+                        recipeStep.putExtra(RECIPE_STEPS_PREVIOUS_STEP_EXTRA, detailRecipes.get(positionStep - 1));
+                    } else {
+                        recipeStep.putExtra(RECIPE_STEPS_PREVIOUS_STEP_EXTRA, detailRecipes.get(positionStep - 1));
+                        recipeStep.putExtra(RECIPE_STEPS_NEXT_STEP_EXTRA, detailRecipes.get(positionStep + 1));
+                    }
+                    finish();
+                    startActivity(recipeStep);
+                }
+            });
+        } else {
+            previousStep.setText(previous.getDetailTitle());
+            previousStep.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int positionStep = VariousMethods.findPositionClickedStep(previous, detailRecipes);
+                    Intent recipeStep = new Intent(RecipeStepActivity.this, RecipeStepActivity.class);
+                    recipeStep.putExtra(RECIPE_STEPS_EXTRA, previous);
+                    recipeStep.putExtra(RECIPE_STEPS_POSITION_EXTRA, positionStep);
+                    recipeStep.putExtra(RECIPE_STEPS_ALL_STEPS_EXTRA, detailRecipes);
+                    if (positionStep == 0) {
+                        recipeStep.putExtra(RECIPE_STEPS_NEXT_STEP_EXTRA, detailRecipes.get(positionStep + 1));
+                    } else if (positionStep == detailRecipes.size() - 1) {
+                        recipeStep.putExtra(RECIPE_STEPS_PREVIOUS_STEP_EXTRA, detailRecipes.get(positionStep - 1));
+                    } else {
+                        recipeStep.putExtra(RECIPE_STEPS_PREVIOUS_STEP_EXTRA, detailRecipes.get(positionStep - 1));
+                        recipeStep.putExtra(RECIPE_STEPS_NEXT_STEP_EXTRA, detailRecipes.get(positionStep + 1));
+                    }
+                    finish();
+                    startActivity(recipeStep);
+                }
+            });
+            nextStep.setText(next.getDetailTitle());
+            nextStep.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int positionStep = VariousMethods.findPositionClickedStep(next, detailRecipes);
+                    Intent recipeStep = new Intent(RecipeStepActivity.this, RecipeStepActivity.class);
+                    recipeStep.putExtra(RECIPE_STEPS_EXTRA, next);
+                    recipeStep.putExtra(RECIPE_STEPS_POSITION_EXTRA, positionStep);
+                    recipeStep.putExtra(RECIPE_STEPS_ALL_STEPS_EXTRA, detailRecipes);
+                    if (positionStep == 0) {
+                        recipeStep.putExtra(RECIPE_STEPS_NEXT_STEP_EXTRA, detailRecipes.get(positionStep + 1));
+                    } else if (positionStep == detailRecipes.size() - 1) {
+                        recipeStep.putExtra(RECIPE_STEPS_PREVIOUS_STEP_EXTRA, detailRecipes.get(positionStep - 1));
+                    } else {
+                        recipeStep.putExtra(RECIPE_STEPS_PREVIOUS_STEP_EXTRA, detailRecipes.get(positionStep - 1));
+                        recipeStep.putExtra(RECIPE_STEPS_NEXT_STEP_EXTRA, detailRecipes.get(positionStep + 1));
+                    }
+                    finish();
+                    startActivity(recipeStep);
+                }
+            });
+        }
+    }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            footerButtons.setVisibility(View.GONE);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            mPlayerView.setLayoutParams(layoutParams);
+            detailView.setPadding(0,0,0,0);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().hide();
+            }
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE);
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            footerButtons.setVisibility(View.VISIBLE);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().show();
+            }
+            int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, getResources().getDisplayMetrics());
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
+            mPlayerView.setLayoutParams(layoutParams);
+            detailView.setPadding(8,8,8,0);
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN  | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        }
+        super.onConfigurationChanged(newConfig);
     }
 }

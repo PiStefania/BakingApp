@@ -1,6 +1,7 @@
 package com.example.android.bakingrecipes.Utils;
 
 import com.example.android.bakingrecipes.Objects.DetailRecipe;
+import com.example.android.bakingrecipes.Objects.Ingredient;
 import com.example.android.bakingrecipes.Objects.Recipe;
 
 import org.json.JSONArray;
@@ -10,6 +11,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class VariousMethods {
+
+    private static final String LOG_TAG = VariousMethods.class.getSimpleName();
 
     private static final String NAME_TAG = "name";
     private static final String IMAGE_TAG = "image";
@@ -35,23 +38,51 @@ public class VariousMethods {
         return recipes;
     }
 
-    private static final String STEP_TITLE = "shortDescription";
-    private static final String STEP_DESCRIPTION = "description";
-    private static final String STEP_VIDEO = "videoURL";
+    private static final String STEP_TITLE_TAG = "shortDescription";
+    private static final String STEP_DESCRIPTION_TAG = "description";
+    private static final String STEP_VIDEO_TAG = "videoURL";
 
     public static ArrayList<DetailRecipe> getStepsRecipe(String stepsStr) throws JSONException {
         ArrayList<DetailRecipe> detailRecipes = new ArrayList<>();
         JSONArray mainObject = new JSONArray(stepsStr);
         for(int i=0;i<mainObject.length();i++){
             JSONObject recipeObject = mainObject.getJSONObject(i);
-            String stepTitle = recipeObject.getString(STEP_TITLE);
-            String stepInstructions = recipeObject.getString(STEP_DESCRIPTION);
-            String stepVideo = recipeObject.getString(STEP_VIDEO);
+            String stepTitle = recipeObject.getString(STEP_TITLE_TAG);
+            String stepInstructions = recipeObject.getString(STEP_DESCRIPTION_TAG);
+            String stepVideo = recipeObject.getString(STEP_VIDEO_TAG);
 
             //new step detail
             DetailRecipe detail = new DetailRecipe(stepTitle,stepVideo,stepInstructions);
             detailRecipes.add(detail);
         }
         return detailRecipes;
+    }
+
+    private static final String INGREDIENT_NAME_TAG = "ingredient";
+    private static final String INGREDIENT_MEASURE_TAG = "measure";
+    private static final String INGREDIENT_QUANTITY_TAG = "quantity";
+
+    public static ArrayList<Ingredient> getIngredientsRecipe(String ingredientsStr) throws JSONException {
+        ArrayList<Ingredient> ingredients = new ArrayList<>();
+        JSONArray mainObject = new JSONArray(ingredientsStr);
+        for(int i=0;i<mainObject.length();i++){
+            JSONObject ingredientObject = mainObject.getJSONObject(i);
+            String ingredientName = ingredientObject.getString(INGREDIENT_NAME_TAG);
+            String measure = ingredientObject.getString(INGREDIENT_MEASURE_TAG);
+            double quantity = ingredientObject.getDouble(INGREDIENT_QUANTITY_TAG);
+
+            //new ingredient
+            Ingredient ingredient = new Ingredient(ingredientName,measure,quantity);
+            ingredients.add(ingredient);
+        }
+        return ingredients;
+    }
+
+    public static int findPositionClickedStep(DetailRecipe detailRecipe,ArrayList<DetailRecipe> detailRecipes){
+        for(int i=0;i<detailRecipes.size();i++){
+            if(detailRecipes.get(i).getDetailTitle().equals(detailRecipe.getDetailTitle()))
+                return i;
+        }
+        return -1;
     }
 }

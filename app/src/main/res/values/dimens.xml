@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="zero_dp">0dp</dimen>
     <!-- main -->
     <dimen name="margin_recycler_view">8dp</dimen>
 
@@ -11,4 +12,8 @@
     <dimen name="image_view_height">200dp</dimen>
     <dimen name="text_view_margin">8dp</dimen>
     <dimen name="text_view_size">24sp</dimen>
+
+    <!-- ingredient item -->
+    <dimen name="ingredient_text_view_size">16sp</dimen>
+    <dimen name="ingredient_header_text_size">20sp</dimen>
 </resources>
