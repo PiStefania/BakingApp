@@ -316,6 +316,7 @@ public class RecipeStepFragment extends Fragment implements View.OnClickListener
     public void onConfigurationChanged(Configuration newConfig) {
         if(!no_video) {
             if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                changed = true;
                 footerButtons.setVisibility(View.GONE);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 mPlayerView.setLayoutParams(layoutParams);
@@ -324,12 +325,9 @@ public class RecipeStepFragment extends Fragment implements View.OnClickListener
                 ((DetailsActivity) getActivity()).hideActionBar();
                 getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE);
             } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                changed = true;
                 footerButtons.setVisibility(View.VISIBLE);
                 ((DetailsActivity) getActivity()).showActionBar();
                 // Calculate ActionBar's height
-                TypedValue tv = new TypedValue();
-                int actionBarHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, ((DetailsActivity)getActivity()).getActionBarHeight(), getResources().getDisplayMetrics());
                 int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, getResources().getDisplayMetrics());
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
                 mPlayerView.setLayoutParams(layoutParams);

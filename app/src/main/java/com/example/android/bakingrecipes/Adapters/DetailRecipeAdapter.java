@@ -21,6 +21,7 @@ public class DetailRecipeAdapter extends RecyclerView.Adapter<DetailRecipeAdapte
     private Context mContext;
     private ArrayList<DetailRecipe> mDetailRecipes;
     private DetailRecipeAdapterOnClickHandler mClickHandler;
+    private int selectedPos = RecyclerView.NO_POSITION;
 
     private static final String LOG_TAG = RecipeAdapter.class.getSimpleName();
 
@@ -57,7 +58,7 @@ public class DetailRecipeAdapter extends RecyclerView.Adapter<DetailRecipeAdapte
         // Create a new View
         View v;
         if(viewType == 1){
-            v = v = LayoutInflater.from(mContext).inflate(R.layout.list_item_details_ingredients,parent,false);
+            v = LayoutInflater.from(mContext).inflate(R.layout.list_item_details_ingredients,parent,false);
         }else{
             v = LayoutInflater.from(mContext).inflate(R.layout.list_item_details,parent,false);
         }
@@ -76,7 +77,7 @@ public class DetailRecipeAdapter extends RecyclerView.Adapter<DetailRecipeAdapte
     public int getItemCount() {
         if(mDetailRecipes == null)
             return 0;
-        return mDetailRecipes.size();
+        return mDetailRecipes.size()+1;
     }
 
     public void setDetailRecipeData(ArrayList<DetailRecipe> detailRecipeData) {

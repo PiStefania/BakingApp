@@ -42,8 +42,6 @@ public class DetailsFragment extends Fragment implements DetailRecipeAdapter.Det
     private static final String RECIPE_EXTRA = "Recipe";
     private static final String LOG_TAG = DetailsActivity.class.getSimpleName();
     private ArrayList<DetailRecipe> detailRecipes;
-    private boolean twoPane = false;
-
     OnRecipeDetailSelected mCallback;
 
     public interface OnRecipeDetailSelected {
@@ -69,11 +67,6 @@ public class DetailsFragment extends Fragment implements DetailRecipeAdapter.Det
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_details, container, false);
         ButterKnife.bind(this, view);
-
-        if(RecipeStepFragment.changed){
-            int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
-            mRecyclerView.setPadding(0, ((DetailsActivity)getActivity()).getActionBarHeight() + 3 * padding, 0, 0);
-        }
 
         ArrayList<DetailRecipe> mDetailRecipe = new ArrayList<>();
         detailRecipeAdapter = new DetailRecipeAdapter(getContext(), mDetailRecipe, this);
@@ -137,6 +130,21 @@ public class DetailsFragment extends Fragment implements DetailRecipeAdapter.Det
             mCallback = (OnRecipeDetailSelected) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement OnRecipeDetailSelected");
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        RecipeStepFragment.changed = false;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(RecipeStepFragment.changed){
+            int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
+            mRecyclerView.setPadding(0, ((DetailsActivity)getActivity()).getActionBarHeight() + 3 * padding, 0, 0);
         }
     }
 

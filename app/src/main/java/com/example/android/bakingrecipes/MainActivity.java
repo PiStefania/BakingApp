@@ -46,8 +46,6 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
         twoPane = mRecyclerViewTwoPane != null && mRecyclerViewTwoPane.getVisibility() == View.VISIBLE;
         if(twoPane) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         if(twoPane){
             int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.margin_recycler_view);

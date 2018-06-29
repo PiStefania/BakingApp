@@ -53,8 +53,6 @@ public class DetailsActivity extends AppCompatActivity implements DetailsFragmen
         // set the orientation of the device
         if(twoPane) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         DetailsFragment frag = new DetailsFragment();
         Bundle bundle = new Bundle();
