@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content_details_two_pane"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <FrameLayout
+        android:id="@+id/recipe_details"
+        android:layout_width="@dimen/recipe_details_width"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/margin_right_two_pane"
+        android:layout_marginRight="@dimen/margin_right_two_pane" />
+
+    <FrameLayout
+        android:id="@+id/recipe_info"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

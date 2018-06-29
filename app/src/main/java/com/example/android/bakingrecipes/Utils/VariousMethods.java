@@ -77,12 +77,4 @@ public class VariousMethods {
         }
         return ingredients;
     }
-
-    public static int findPositionClickedStep(DetailRecipe detailRecipe,ArrayList<DetailRecipe> detailRecipes){
-        for(int i=0;i<detailRecipes.size();i++){
-            if(detailRecipes.get(i).getDetailTitle().equals(detailRecipe.getDetailTitle()))
-                return i;
-        }
-        return -1;
-    }
 }

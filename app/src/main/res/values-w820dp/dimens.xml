@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="image_view_height">300dp</dimen>
+
+    <!-- ingredient item -->
+    <dimen name="ingredient_text_view_size">20sp</dimen>
+    <dimen name="ingredient_header_text_size">24sp</dimen>
+
+    <!-- recipe step -->
+    <dimen name="text_view_size_instructions">28sp</dimen>
+    <dimen name="image_view_height_step">500dp</dimen>
+
+</resources>

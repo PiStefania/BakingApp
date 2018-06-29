@@ -22,12 +22,12 @@
             <com.google.android.exoplayer2.ui.SimpleExoPlayerView
                 android:id="@+id/video_recipe_step"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/image_view_height" />
+                android:layout_height="@dimen/image_view_height_step" />
 
             <ImageView
                 android:id="@+id/no_video_found"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/image_view_height"
+                android:layout_height="@dimen/image_view_height_step"
                 android:scaleType="centerCrop"
                 android:src="@drawable/no_video_thumbnail"
                 android:visibility="gone" />

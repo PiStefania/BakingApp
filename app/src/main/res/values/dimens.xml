@@ -8,6 +8,8 @@
     <dimen name="margin_recipe_step">8dp</dimen>
     <dimen name="text_view_size_instructions">20sp</dimen>
     <dimen name="view_divider_buttons">2dp</dimen>
+    <dimen name="image_view_height_step">200dp</dimen>
+
     <!-- list item -->
     <dimen name="image_view_height">200dp</dimen>
     <dimen name="text_view_margin">8dp</dimen>
@@ -16,4 +18,8 @@
     <!-- ingredient item -->
     <dimen name="ingredient_text_view_size">16sp</dimen>
     <dimen name="ingredient_header_text_size">20sp</dimen>
+
+    <!-- details -->
+    <dimen name="margin_right_two_pane">10dp</dimen>
+    <dimen name="recipe_details_width">450dp</dimen>
 </resources>

@@ -1,7 +1,6 @@
 package com.example.android.bakingrecipes.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.example.android.bakingrecipes.IngredientsActivity;
 import com.example.android.bakingrecipes.Objects.DetailRecipe;
 import com.example.android.bakingrecipes.R;
 
@@ -23,21 +21,17 @@ public class DetailRecipeAdapter extends RecyclerView.Adapter<DetailRecipeAdapte
     private Context mContext;
     private ArrayList<DetailRecipe> mDetailRecipes;
     private DetailRecipeAdapterOnClickHandler mClickHandler;
-    private String mRecipeIngredientsExtra;
-
-    private static final String RECIPE_INGREDIENTS_EXTRA = "RecipeIngredients";
 
     private static final String LOG_TAG = RecipeAdapter.class.getSimpleName();
 
-    public DetailRecipeAdapter(Context context, ArrayList<DetailRecipe> detailRecipes,DetailRecipeAdapterOnClickHandler clickHandler, String ingredientsExtra){
+    public DetailRecipeAdapter(Context context, ArrayList<DetailRecipe> detailRecipes,DetailRecipeAdapterOnClickHandler clickHandler){
         mContext = context;
         mDetailRecipes = detailRecipes;
         mClickHandler = clickHandler;
-        mRecipeIngredientsExtra = ingredientsExtra;
     }
 
     public interface DetailRecipeAdapterOnClickHandler {
-        void onClick(DetailRecipe detailRecipe);
+        void onClick(int position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -53,13 +47,7 @@ public class DetailRecipeAdapter extends RecyclerView.Adapter<DetailRecipeAdapte
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            if(position>0) {
-                mClickHandler.onClick(mDetailRecipes.get(position-1));
-            }else{
-                Intent ingredientIntent = new Intent(mContext,IngredientsActivity.class);
-                ingredientIntent.putExtra(RECIPE_INGREDIENTS_EXTRA,mRecipeIngredientsExtra);
-                mContext.startActivity(ingredientIntent);
-            }
+            mClickHandler.onClick(position);
         }
     }
 

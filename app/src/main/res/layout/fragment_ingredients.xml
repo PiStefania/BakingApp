@@ -5,4 +5,4 @@
     android:id="@+id/content_ingredients"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".IngredientsActivity" />
+    tools:context=".Fragments.IngredientsFragment" />
