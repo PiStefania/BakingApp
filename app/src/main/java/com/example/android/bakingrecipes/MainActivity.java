@@ -12,11 +12,14 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 
 import com.example.android.bakingrecipes.Adapters.RecipeAdapter;
 import com.example.android.bakingrecipes.Objects.Recipe;
 import com.example.android.bakingrecipes.Utils.ItemDecoration;
-import com.example.android.bakingrecipes.Utils.VariousMethods;
+import com.example.android.bakingrecipes.Utils.NetworkUtils;
+import com.example.android.bakingrecipes.Utils.RecipesJsonUtils;
 
 import java.util.ArrayList;
 
@@ -30,6 +33,10 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
     @BindView(R.id.content) RecyclerView mRecyclerView;
     @Nullable
     @BindView(R.id.content_two_pane) RecyclerView mRecyclerViewTwoPane;
+    @BindView(R.id.loading_indicator)
+    ProgressBar loadingIndicator;
+    @BindView(R.id.error_view)
+    ScrollView errorView;
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final int RECIPES_LOADER_ID = 1;
@@ -53,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
             mRecyclerViewTwoPane.setHasFixedSize(true);
             mRecyclerViewTwoPane.setLayoutManager(new GridLayoutManager(this, 3));
             mRecyclerViewTwoPane.setAdapter(recipeAdapter);
+            mRecyclerViewTwoPane.setVisibility(View.VISIBLE);
+
         }else{
             int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.margin_recycler_view);
             mRecyclerView.addItemDecoration(new ItemDecoration(spacingInPixels));
@@ -60,7 +69,12 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
             mRecyclerView.setLayoutManager(linearLayoutManager);
             mRecyclerView.setAdapter(recipeAdapter);
+            mRecyclerView.setVisibility(View.VISIBLE);
+
         }
+
+        errorView.setVisibility(View.INVISIBLE);
+
         LoaderManager.LoaderCallbacks<ArrayList<Recipe>> callback = this;
         getSupportLoaderManager().initLoader(RECIPES_LOADER_ID, null, callback);
     }
@@ -83,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
                 if (recipes != null) {
                     recipes = null;
                 } else {
+                    loadingIndicator.setVisibility(View.VISIBLE);
                     forceLoad();
                 }
             }
@@ -90,7 +105,8 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
             @Override
             public ArrayList<Recipe> loadInBackground() {
                 try {
-                    return VariousMethods.JSONtoArrayList(getResources().getString(R.string.recipes));
+                    String jsonResponse = NetworkUtils.getResponseFromHttpUrl(NetworkUtils.buildUrl());
+                    return RecipesJsonUtils.JSONtoArrayList(jsonResponse);
                 } catch (Exception e) {
                     e.printStackTrace();
                     return null;
@@ -101,7 +117,23 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
 
     @Override
     public void onLoadFinished(Loader<ArrayList<Recipe>> loader, ArrayList<Recipe> recipes) {
+        loadingIndicator.setVisibility(View.INVISIBLE);
         recipeAdapter.setRecipeData(recipes);
+        if(recipes == null || recipes.size()==0){
+            if(twoPane) {
+                mRecyclerViewTwoPane.setVisibility(View.INVISIBLE);
+            }else{
+                mRecyclerView.setVisibility(View.INVISIBLE);
+            }
+            errorView.setVisibility(View.VISIBLE);
+        }else{
+            errorView.setVisibility(View.INVISIBLE);
+            if(twoPane) {
+                mRecyclerViewTwoPane.setVisibility(View.VISIBLE);
+            }else{
+                mRecyclerView.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     @Override

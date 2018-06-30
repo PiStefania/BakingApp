@@ -19,7 +19,7 @@ import com.example.android.bakingrecipes.DetailsActivity;
 import com.example.android.bakingrecipes.Objects.Ingredient;
 import com.example.android.bakingrecipes.R;
 import com.example.android.bakingrecipes.Utils.ItemDecoration;
-import com.example.android.bakingrecipes.Utils.VariousMethods;
+import com.example.android.bakingrecipes.Utils.RecipesJsonUtils;
 
 import java.util.ArrayList;
 
@@ -86,7 +86,7 @@ public class IngredientsFragment extends Fragment implements LoaderManager.Loade
             @Override
             public ArrayList<Ingredient> loadInBackground() {
                 try {
-                    return VariousMethods.getIngredientsRecipe(ingredientsJSON);
+                    return RecipesJsonUtils.getIngredientsRecipe(ingredientsJSON);
                 } catch (Exception e) {
                     e.printStackTrace();
                     return null;

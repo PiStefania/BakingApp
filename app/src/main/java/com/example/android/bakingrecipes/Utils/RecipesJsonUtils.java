@@ -10,9 +10,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class VariousMethods {
+public final class RecipesJsonUtils {
 
-    private static final String LOG_TAG = VariousMethods.class.getSimpleName();
+    private static final String LOG_TAG = RecipesJsonUtils.class.getSimpleName();
 
     private static final String NAME_TAG = "name";
     private static final String IMAGE_TAG = "image";

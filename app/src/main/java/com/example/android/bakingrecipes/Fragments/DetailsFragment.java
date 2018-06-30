@@ -22,7 +22,7 @@ import com.example.android.bakingrecipes.Objects.DetailRecipe;
 import com.example.android.bakingrecipes.Objects.Recipe;
 import com.example.android.bakingrecipes.R;
 import com.example.android.bakingrecipes.Utils.ItemDecoration;
-import com.example.android.bakingrecipes.Utils.VariousMethods;
+import com.example.android.bakingrecipes.Utils.RecipesJsonUtils;
 
 import java.util.ArrayList;
 
@@ -103,7 +103,7 @@ public class DetailsFragment extends Fragment implements DetailRecipeAdapter.Det
             @Override
             public ArrayList<DetailRecipe> loadInBackground() {
                 try {
-                    return VariousMethods.getStepsRecipe(recipe.getRecipeSteps());
+                    return RecipesJsonUtils.getStepsRecipe(recipe.getRecipeSteps());
                 } catch (Exception e) {
                     e.printStackTrace();
                     return null;
