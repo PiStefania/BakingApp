@@ -10,4 +10,10 @@
     <dimen name="text_view_size_instructions">28sp</dimen>
     <dimen name="image_view_height_step">500dp</dimen>
 
+    <!-- widget -->
+    <dimen name="min_width">80dp</dimen>
+    <dimen name="min_height">80dp</dimen>
+    <dimen name="widget_margin">8dp</dimen>
+    <dimen name="widget_recipe_item_text_size">32sp</dimen>
+    <dimen name="widget_ingredient_item_text_size">24sp</dimen>
 </resources>

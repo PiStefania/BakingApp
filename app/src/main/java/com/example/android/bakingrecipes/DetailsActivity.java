@@ -61,7 +61,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsFragmen
         FragmentManager fragmentManager = getSupportFragmentManager();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if(!twoPane) {
-            fragmentManager.beginTransaction().add(R.id.content_details, frag).commit();
+            fragmentManager.beginTransaction().add(R.id.content_details_frag, frag).commit();
         }else{
             fragmentManager.beginTransaction().add(R.id.recipe_details, frag).commit();
         }
@@ -75,13 +75,13 @@ public class DetailsActivity extends AppCompatActivity implements DetailsFragmen
                 args.putInt(RECIPE_STEPS_POSITION_EXTRA, position - 1);
                 RecipeStepFragment recipeStepFragment = new RecipeStepFragment();
                 recipeStepFragment.setArguments(args);
-                getSupportFragmentManager().beginTransaction().replace(R.id.content_details, recipeStepFragment).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_details_frag, recipeStepFragment).addToBackStack(null).commit();
             } else {
                 Bundle args = new Bundle();
                 args.putString(RECIPE_INGREDIENTS_EXTRA, recipe.getRecipeIngredients());
                 IngredientsFragment ingredientsFragment = new IngredientsFragment();
                 ingredientsFragment.setArguments(args);
-                getSupportFragmentManager().beginTransaction().replace(R.id.content_details, ingredientsFragment).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_details_frag, ingredientsFragment).addToBackStack(null).commit();
             }
         }else{
             if (position > 0) {
@@ -138,7 +138,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsFragmen
         args.putInt(RECIPE_STEPS_POSITION_EXTRA, position);
         RecipeStepFragment recipeStepFragment = new RecipeStepFragment();
         recipeStepFragment.setArguments(args);
-        getSupportFragmentManager().beginTransaction().replace(R.id.content_details, recipeStepFragment).addToBackStack(null).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_details_frag, recipeStepFragment).addToBackStack(null).commit();
     }
 
     public int getActionBarHeight() {
