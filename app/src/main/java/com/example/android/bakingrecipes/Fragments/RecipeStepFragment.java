@@ -57,10 +57,12 @@ public class RecipeStepFragment extends Fragment implements View.OnClickListener
     Button previousStep;
     @BindView(R.id.next_section)
     Button nextStep;
-    @BindView(R.id.footer_buttons) LinearLayout footerButtons;
+    @BindView(R.id.footer_buttons)
+    LinearLayout footerButtons;
     @BindView(R.id.main_content)
     RelativeLayout mainView;
-    @BindView(R.id.details_view) LinearLayout detailView;
+    @BindView(R.id.details_view)
+    LinearLayout detailView;
     private SimpleExoPlayer mExoPlayer;
     @BindView(R.id.video_recipe_step)
     SimpleExoPlayerView mPlayerView;
@@ -69,6 +71,7 @@ public class RecipeStepFragment extends Fragment implements View.OnClickListener
 
     private static final String LOG_TAG = RecipeStepFragment.class.getSimpleName();
     private static final String RECIPE_STEPS_EXTRA = "RecipeSteps";
+    private static final String RECIPE_NO_VIDEO = "NO_VIDEO";
     private static final String RECIPE_STEPS_POSITION_EXTRA = "RecipeStepPosition";
 
     private ArrayList<DetailRecipe> detailRecipes;
@@ -81,7 +84,7 @@ public class RecipeStepFragment extends Fragment implements View.OnClickListener
     RecipeStepFragment.onRecipeNextPreviousSelected mCallback;
 
     public interface onRecipeNextPreviousSelected {
-        public void onRecipeNextPreviousSelected(int position,ArrayList<DetailRecipe> detailRecipes);
+        public void onRecipeNextPreviousSelected(int position, ArrayList<DetailRecipe> detailRecipes);
     }
 
 
@@ -102,18 +105,35 @@ public class RecipeStepFragment extends Fragment implements View.OnClickListener
         View view = inflater.inflate(R.layout.fragment_recipe_step, container, false);
         ButterKnife.bind(this, view);
 
-        if(changed){
-            int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
-            mainView.setPadding(0, ((DetailsActivity)getActivity()).getActionBarHeight() + 3 * padding, 0, 0);
-        }
-
-        if(twoPane){
+        if (twoPane) {
             footerButtons.setVisibility(View.GONE);
         }
         //get recipe step details
         detailRecipe = detailRecipes.get(positionStep);
 
         populateButtons();
+        instructions.setText(detailRecipe.getDetailInstructions());
+
+        if (changed) {
+            int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
+            mainView.setPadding(0, ((DetailsActivity) getActivity()).getActionBarHeight() + 3 * padding, 0, 0);
+        }
+
+        changeLayoutOrientation();
+
+
+        if (savedInstanceState != null) {
+            no_video = savedInstanceState.getBoolean(RECIPE_NO_VIDEO);
+            if(!no_video) {
+                mPlayerView.setPlayer(mExoPlayer);
+                noVideoImageView.setVisibility(View.GONE);
+            }else{
+                mPlayerView.setVisibility(View.GONE);
+                noVideoImageView.setVisibility(View.VISIBLE);
+                mainView.setPadding(0,0,0,0);
+            }
+            return view;
+        }
 
         if (!detailRecipe.getDetailVideo().isEmpty() || !detailRecipe.getDetailVideo().equals("")) {
             no_video = false;
@@ -127,14 +147,10 @@ public class RecipeStepFragment extends Fragment implements View.OnClickListener
             mPlayerView.setVisibility(View.GONE);
             noVideoImageView.setVisibility(View.VISIBLE);
         }
-
-        instructions.setText(detailRecipe.getDetailInstructions());
-
-
         return view;
     }
 
-    private void initializeMediaSession(){
+    private void initializeMediaSession() {
 
         //create a MediaSessionCompat
         mMediaSession = new MediaSessionCompat(getContext(), LOG_TAG);
@@ -223,7 +239,7 @@ public class RecipeStepFragment extends Fragment implements View.OnClickListener
     }
 
     private void releasePlayer() {
-        if(mExoPlayer!= null) {
+        if (mExoPlayer != null) {
             mExoPlayer.stop();
             mExoPlayer.release();
             mExoPlayer = null;
@@ -234,7 +250,7 @@ public class RecipeStepFragment extends Fragment implements View.OnClickListener
     public void onDestroy() {
         super.onDestroy();
         ((DetailsActivity) getActivity()).setActionBarTitle(getContext().getResources().getString(R.string.details_activity));
-        if(!getActivity().isChangingConfigurations()) {
+        if (!getActivity().isChangingConfigurations()) {
             if (!detailRecipe.getDetailVideo().isEmpty() || !detailRecipe.getDetailVideo().equals("")) {
                 releasePlayer();
                 mMediaSession.setActive(false);
@@ -246,6 +262,10 @@ public class RecipeStepFragment extends Fragment implements View.OnClickListener
     public void onResume() {
         super.onResume();
         ((DetailsActivity) getActivity()).setActionBarTitle(detailRecipes.get(positionStep).getDetailTitle());
+        if (no_video && changed) {
+            int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
+            mainView.setPadding(0, ((DetailsActivity) getActivity()).getActionBarHeight() + 3 * padding, 0, 0);
+        }
     }
 
     private class MySessionCallback extends MediaSessionCompat.Callback {
@@ -278,44 +298,44 @@ public class RecipeStepFragment extends Fragment implements View.OnClickListener
     private void populateButtons() {
         if (positionStep == 0) {
             previousStep.setVisibility(View.GONE);
-            nextStep.setText(detailRecipes.get(positionStep+1).getDetailTitle());
+            nextStep.setText(detailRecipes.get(positionStep + 1).getDetailTitle());
             nextStep.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mCallback.onRecipeNextPreviousSelected(positionStep+1,detailRecipes);
+                    mCallback.onRecipeNextPreviousSelected(positionStep + 1, detailRecipes);
                 }
             });
         } else if (positionStep == detailRecipes.size() - 1) {
             nextStep.setVisibility(View.GONE);
-            previousStep.setText(detailRecipes.get(positionStep-1).getDetailTitle());
+            previousStep.setText(detailRecipes.get(positionStep - 1).getDetailTitle());
             previousStep.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mCallback.onRecipeNextPreviousSelected(positionStep-1,detailRecipes);
+                    mCallback.onRecipeNextPreviousSelected(positionStep - 1, detailRecipes);
                 }
             });
         } else {
-            previousStep.setText(detailRecipes.get(positionStep-1).getDetailTitle());
+            previousStep.setText(detailRecipes.get(positionStep - 1).getDetailTitle());
             previousStep.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mCallback.onRecipeNextPreviousSelected(positionStep-1,detailRecipes);
+                    mCallback.onRecipeNextPreviousSelected(positionStep - 1, detailRecipes);
                 }
             });
-            nextStep.setText(detailRecipes.get(positionStep+1).getDetailTitle());
+            nextStep.setText(detailRecipes.get(positionStep + 1).getDetailTitle());
             nextStep.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mCallback.onRecipeNextPreviousSelected(positionStep+1,detailRecipes);
+                    mCallback.onRecipeNextPreviousSelected(positionStep + 1, detailRecipes);
                 }
             });
         }
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        if(!no_video) {
-            if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+    private void changeLayoutOrientation() {
+        int orientation = getResources().getConfiguration().orientation;
+        if (!no_video) {
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 changed = true;
                 footerButtons.setVisibility(View.GONE);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -324,32 +344,36 @@ public class RecipeStepFragment extends Fragment implements View.OnClickListener
                 mainView.setPadding(0, 0, 0, 0);
                 ((DetailsActivity) getActivity()).hideActionBar();
                 getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE);
-            } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
                 footerButtons.setVisibility(View.VISIBLE);
                 ((DetailsActivity) getActivity()).showActionBar();
-                // Calculate ActionBar's height
                 int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, getResources().getDisplayMetrics());
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
                 mPlayerView.setLayoutParams(layoutParams);
                 int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
                 detailView.setPadding(padding, padding, padding, 0);
-                mainView.setPadding(0, ((DetailsActivity)getActivity()).getActionBarHeight() + 3 * padding, 0, 0);
+                mainView.setPadding(0, ((DetailsActivity) getActivity()).getActionBarHeight() + 3 * padding, 0, 0);
                 getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
             }
         }
-        super.onConfigurationChanged(newConfig);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         ((DetailsActivity) getActivity()).setActionBarTitle(getContext().getResources().getString(R.string.details_activity));
-        if(!getActivity().isChangingConfigurations()) {
+        if (!getActivity().isChangingConfigurations()) {
             if (!detailRecipe.getDetailVideo().isEmpty() || !detailRecipe.getDetailVideo().equals("")) {
                 releasePlayer();
                 mMediaSession.setActive(false);
             }
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(RECIPE_NO_VIDEO,no_video);
     }
 
 }

@@ -10,6 +10,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -115,5 +116,10 @@ public class IngredientsFragment extends Fragment implements LoaderManager.Loade
     public void onResume() {
         super.onResume();
         ((DetailsActivity) getActivity()).setActionBarTitle(getContext().getResources().getString(R.string.recipe_ingredients_activity));
+
+        if(RecipeStepFragment.changed){
+            int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
+            mRecyclerView.setPadding(0, ((DetailsActivity)getActivity()).getActionBarHeight() + 3 * padding, 0, 0);
+        }
     }
 }

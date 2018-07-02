@@ -28,6 +28,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsFragmen
     @BindView(R.id.content_details_two_pane) LinearLayout twoPaneView;
 
     private Recipe recipe;
+    private String recipeIngredients;
     private static final String RECIPE_EXTRA = "Recipe";
     private static final String RECIPE_STEPS_EXTRA = "RecipeSteps";
     private static final String RECIPE_STEPS_POSITION_EXTRA = "RecipeStepPosition";
@@ -43,12 +44,17 @@ public class DetailsActivity extends AppCompatActivity implements DetailsFragmen
         ButterKnife.bind(this);
 
         getSupportActionBar().setTitle(R.string.details_activity);
-        if (savedInstanceState != null) {
-            return;
-        }
 
         //get recipe's info
         recipe = getIntent().getParcelableExtra(RECIPE_EXTRA);
+        if(recipe != null) {
+            recipeIngredients = recipe.getRecipeIngredients();
+        }
+        if (savedInstanceState != null) {
+            recipeIngredients = savedInstanceState.getString(RECIPE_INGREDIENTS_EXTRA);
+            return;
+        }
+
         twoPane = twoPaneView != null && twoPaneView.getVisibility() == View.VISIBLE;
         // set the orientation of the device
         if(twoPane) {
@@ -154,5 +160,13 @@ public class DetailsActivity extends AppCompatActivity implements DetailsFragmen
                     getResources().getDisplayMetrics());
         }
         return actionBarHeight;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(recipe != null) {
+            outState.putString(RECIPE_INGREDIENTS_EXTRA, recipe.getRecipeIngredients());
+        }
     }
 }

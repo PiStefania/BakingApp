@@ -29,10 +29,9 @@ public final class RecipesJsonUtils {
             String image = recipeObject.getString(IMAGE_TAG);
             JSONArray ingredients = recipeObject.getJSONArray(INGREDIENTS_TAG);
             JSONArray steps = recipeObject.getJSONArray(STEPS_TAG);
-            Integer servings = recipeObject.getInt(SERVINGS_TAG);
 
             //new recipe
-            Recipe recipe = new Recipe(name,image,ingredients.toString(),steps.toString(),servings);
+            Recipe recipe = new Recipe(name,image,ingredients.toString(),steps.toString());
             recipes.add(recipe);
         }
         return recipes;

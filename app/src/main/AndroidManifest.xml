@@ -24,7 +24,6 @@
             android:name=".DetailsActivity"
             android:label="@string/details_activity"
             android:launchMode="singleTop"
-            android:configChanges="screenSize|orientation"
             android:parentActivityName=".MainActivity" />
 
         <receiver android:name=".AppWidgetProvider.RecipesWidgetProvider" >

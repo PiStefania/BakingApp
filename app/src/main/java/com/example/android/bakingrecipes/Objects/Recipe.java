@@ -8,14 +8,12 @@ public class Recipe implements Parcelable {
     private String image;
     private String recipeIngredients;
     private String recipeSteps;
-    private Integer servings;
 
-    public Recipe(String name, String image, String recipeIngredients, String recipeSteps, Integer servings) {
+    public Recipe(String name, String image, String recipeIngredients, String recipeSteps) {
         this.name = name;
         this.image = image;
         this.recipeIngredients = recipeIngredients;
         this.recipeSteps = recipeSteps;
-        this.servings = servings;
     }
 
     public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
@@ -62,20 +60,11 @@ public class Recipe implements Parcelable {
         this.recipeSteps = recipeSteps;
     }
 
-    public Integer getServings() {
-        return servings;
-    }
-
-    public void setServings(Integer servings) {
-        this.servings = servings;
-    }
-
     public Recipe(Parcel in) {
         name = in.readString();
         image = in.readString();
         recipeIngredients = in.readString();
         recipeSteps = in.readString();
-        servings = in.readInt();
     }
 
     @Override
@@ -89,11 +78,5 @@ public class Recipe implements Parcelable {
         parcel.writeString(image);
         parcel.writeString(recipeIngredients);
         parcel.writeString(recipeSteps);
-        if (servings == null) {
-            parcel.writeByte((byte) 0);
-        } else {
-            parcel.writeByte((byte) 1);
-            parcel.writeInt(servings);
-        }
     }
 }
